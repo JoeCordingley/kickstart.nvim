@@ -91,8 +91,8 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
 -- for nvim-tree
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
+--vim.g.loaded_netrw = 1
+--vim.g.loaded_netrwPlugin = 1
 
 -- Set to true if you have a Nerd Font installed
 vim.g.have_nerd_font = false
@@ -884,7 +884,26 @@ require('lazy').setup({
       })
     end,
   },
-  { 'nvim-tree/nvim-tree.lua', opts = {} },
+  --{ 'preservim/nerdtree' },
+  {
+    'nvim-neo-tree/neo-tree.nvim',
+    branch = 'v3.x',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
+      'MunifTanjim/nui.nvim',
+      -- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
+    },
+    config = function()
+      require('neo-tree').setup {
+        filesystem = {
+          follow_current_file = {
+            enabled = true,
+          },
+        },
+      }
+    end,
+  },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
