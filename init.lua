@@ -1,4 +1,4 @@
---[[
+--[[Spe
 
 =====================================================================
 ==================== READ THIS BEFORE CONTINUING ====================
@@ -106,7 +106,7 @@ vim.g.have_nerd_font = false
 vim.opt.number = true
 -- You can also add relative line numbers, to help with jumping.
 --  Experiment for yourself to see if you like it!
--- vim.opt.relativenumber = true
+vim.opt.relativenumber = true
 
 -- Enable mouse mode, can be useful for resizing splits for example!
 vim.opt.mouse = 'a'
@@ -546,6 +546,7 @@ require('lazy').setup({
         -- gopls = {},
         -- pyright = {},
         -- rust_analyzer = {},
+        hls = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -618,6 +619,7 @@ require('lazy').setup({
       end,
       formatters_by_ft = {
         lua = { 'stylua' },
+        haskell = { 'fourmolu' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
@@ -902,8 +904,35 @@ require('lazy').setup({
           },
         },
       }
+      local builtin = require 'neo-tree.command'
+      vim.keymap.set('n', '<leader>|', function()
+        builtin.execute { action = 'show', toggle = true }
+      end)
     end,
   },
+  {
+    'windwp/nvim-autopairs',
+    event = 'InsertEnter',
+    config = true,
+    -- use opts = {} for passing setup options
+    -- this is equalent to setup({}) function
+  },
+  {
+    'NeogitOrg/neogit',
+    dependencies = {
+      'nvim-lua/plenary.nvim', -- required
+      'sindrets/diffview.nvim', -- optional - Diff integration
+
+      -- Only one of these is needed, not both.
+      'nvim-telescope/telescope.nvim', -- optional
+    },
+    config = true,
+  },
+  --  {
+  --    'mrcjkb/haskell-tools.nvim',
+  --    version = '^3', -- Recommended
+  --    ft = { 'haskell', 'lhaskell', 'cabal', 'cabalproject' },
+  --  },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
