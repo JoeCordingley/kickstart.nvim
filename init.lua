@@ -218,6 +218,7 @@ end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
 vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
 -- [[ Configure and install plugins ]]
 --
 --  To check the current status of your plugins, run
@@ -573,6 +574,7 @@ require('lazy').setup({
         -- rust_analyzer = {},
         hls = {},
         jsonls = {},
+        purescriptls = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
         -- Some languages (like typescript) have entire language plugins that can be useful:
@@ -976,6 +978,11 @@ require('lazy').setup({
     },
     config = true,
   },
+  -- removed because it messed with completion
+  --  {
+  --    'FabijanZulj/blame.nvim',
+  --    opts = {},
+  --  },
   --  {
   --    'mrcjkb/haskell-tools.nvim',
   --    version = '^3', -- Recommended
