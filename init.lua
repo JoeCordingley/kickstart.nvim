@@ -126,8 +126,8 @@ vim.opt.breakindent = true
 vim.opt.undofile = true
 
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
-vim.opt.ignorecase = false
-vim.opt.smartcase = false
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
 
 -- Keep signcolumn on by default
 vim.opt.signcolumn = 'yes'
@@ -156,7 +156,7 @@ vim.opt.inccommand = 'split'
 vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = 0
+vim.opt.scrolloff = 10
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -223,10 +223,9 @@ if not vim.loop.fs_stat(lazypath) then
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
-vim.opt.shiftwidth = 2
-vim.opt.tabstop = 2
+vim.opt.tabstop = 4
+vim.opt.shiftwidth = 4
 vim.opt.expandtab = true
-
 -- [[ Configure and install plugins ]]
 --
 --  To check the current status of your plugins, run
@@ -591,21 +590,6 @@ require('lazy').setup({
         -- But for many setups, the LSP (`tsserver`) will work just fine
         -- tsserver = {},
         --
-        html = {
-          settings = {
-            html = {
-              format = {
-                templating = true,
-                wrapLineLength = 120,
-                wrapAttributes = 'auto',
-              },
-              hover = {
-                documentation = true,
-                references = true,
-              },
-            },
-          },
-        },
 
         lua_ls = {
           -- cmd = {...},
@@ -672,13 +656,12 @@ require('lazy').setup({
         lua = { 'stylua' },
         haskell = { 'fourmolu' },
         json = { 'jq' },
-        purescript = { 'purs-tidy' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
-        javascript = { 'prettier' },
+        -- javascript = { { "prettierd", "prettier" } },
       },
     },
     vim.api.nvim_create_user_command('Format', function(args)
@@ -960,40 +943,34 @@ require('lazy').setup({
       })
     end,
   },
-  { 'preservim/nerdtree' },
-  --{
-  --  'nvim-neo-tree/neo-tree.nvim',
-  --  branch = 'v3.x',
-  --  dependencies = {
-  --    'nvim-lua/plenary.nvim',
-  --    'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
-  --    'MunifTanjim/nui.nvim',
-  --    -- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
-  --  },
-  --  config = function()
-  --    require('neo-tree').setup {
-  --      filesystem = {
-  --        follow_current_file = {
-  --          enabled = true,
-  --        },
-  --      },
-  --    }
-  --    local builtin = require 'neo-tree.command'
-  --    vim.keymap.set('n', '<leader>|', function()
-  --      builtin.execute { action = 'show', toggle = true }
-  --    end)
-  --  end,
-  --},
+  --{ 'preservim/nerdtree' },
+  {
+    'nvim-neo-tree/neo-tree.nvim',
+    branch = 'v3.x',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
+      'MunifTanjim/nui.nvim',
+      -- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
+    },
+    config = function()
+      require('neo-tree').setup {
+        filesystem = {
+          follow_current_file = {
+            enabled = true,
+          },
+        },
+      }
+      local builtin = require 'neo-tree.command'
+      vim.keymap.set('n', '<leader>|', function()
+        builtin.execute { action = 'show', toggle = true }
+      end)
+    end,
+  },
   {
     'windwp/nvim-autopairs',
     event = 'InsertEnter',
     config = true,
-    -- use opts = {} for passing setup options
-    -- this is equalent to setup({}) function
-  },
-  {
-    'windwp/nvim-ts-autotag',
-    opts = {},
     -- use opts = {} for passing setup options
     -- this is equalent to setup({}) function
   },
