@@ -95,7 +95,7 @@ vim.g.maplocalleader = ' '
 --vim.g.loaded_netrwPlugin = 1
 
 -- Set to true if you have a Nerd Font installed
-vim.g.have_nerd_font = false
+vim.g.have_nerd_font = true
 
 -- [[ Setting options ]]
 -- See `:help vim.opt`
@@ -126,8 +126,8 @@ vim.opt.breakindent = true
 vim.opt.undofile = true
 
 -- Case-insensitive searching UNLESS \C or one or more capital letters in the search term
-vim.opt.ignorecase = true
-vim.opt.smartcase = true
+vim.opt.ignorecase = false
+vim.opt.smartcase = false
 
 -- Keep signcolumn on by default
 vim.opt.signcolumn = 'yes'
@@ -156,7 +156,7 @@ vim.opt.inccommand = 'split'
 vim.opt.cursorline = true
 
 -- Minimal number of screen lines to keep above and below the cursor.
-vim.opt.scrolloff = 10
+vim.opt.scrolloff = 0
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
@@ -217,7 +217,10 @@ if not vim.loop.fs_stat(lazypath) then
 end ---@diagnostic disable-next-line: undefined-field
 vim.opt.rtp:prepend(lazypath)
 
-vim.opt.tabstop = 4
+vim.opt.shiftwidth = 2
+vim.opt.tabstop = 2
+vim.opt.expandtab = true
+
 -- [[ Configure and install plugins ]]
 --
 --  To check the current status of your plugins, run
@@ -581,6 +584,21 @@ require('lazy').setup({
         -- But for many setups, the LSP (`tsserver`) will work just fine
         -- tsserver = {},
         --
+        html = {
+          settings = {
+            html = {
+              format = {
+                templating = true,
+                wrapLineLength = 120,
+                wrapAttributes = 'auto',
+              },
+              hover = {
+                documentation = true,
+                references = true,
+              },
+            },
+          },
+        },
 
         lua_ls = {
           -- cmd = {...},
@@ -647,12 +665,13 @@ require('lazy').setup({
         lua = { 'stylua' },
         haskell = { 'fourmolu' },
         json = { 'jq' },
+        purescript = { 'purs-tidy' },
         -- Conform can also run multiple formatters sequentially
         -- python = { "isort", "black" },
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
-        -- javascript = { { "prettierd", "prettier" } },
+        javascript = { 'prettier' },
       },
     },
     vim.api.nvim_create_user_command('Format', function(args)
@@ -772,35 +791,35 @@ require('lazy').setup({
       }
     end,
   },
-  {
-    'maxmx03/solarized.nvim',
-    lazy = false,
-    priority = 1000,
-    config = function()
-      vim.o.background = 'dark' -- or 'light'
+  --  {
+  --    'maxmx03/solarized.nvim',
+  --    lazy = false,
+  --    priority = 1000,
+  --    config = function()
+  --      vim.o.background = 'dark' -- or 'light'
+  --
+  --      vim.cmd.colorscheme 'solarized'
+  --    end,
+  --  },
 
+  { -- You can easily change to a different colorscheme.
+    -- Change the name of the colorscheme plugin below, and then
+    -- change the command in the config to whatever the name of that colorscheme is.
+    --
+    -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
+    'ishan9299/nvim-solarized-lua',
+    priority = 1000, -- Make sure to load this before all the other start plugins.
+    init = function()
+      -- Load the colorscheme here.
+      -- Like many other themes, this one has different styles, and you could load
+      -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
       vim.cmd.colorscheme 'solarized'
+      vim.o.background = 'dark'
+
+      -- You can configure highlights by doing something like:
+      --vim.cmd.hi 'Comment gui=none'
     end,
   },
-
-  -- { -- You can easily change to a different colorscheme.
-  --   -- Change the name of the colorscheme plugin below, and then
-  --   -- change the command in the config to whatever the name of that colorscheme is.
-  --   --
-  --   -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`.
-  --   'ishan9299/nvim-solarized-lua',
-  --   priority = 1000, -- Make sure to load this before all the other start plugins.
-  --   init = function()
-  --     -- Load the colorscheme here.
-  --     -- Like many other themes, this one has different styles, and you could load
-  --     -- any other, such as 'tokyonight-storm', 'tokyonight-moon', or 'tokyonight-day'.
-  --     vim.cmd.colorscheme 'solarized'
-  --     vim.o.background = 'dark'
-
-  --     -- You can configure highlights by doing something like:
-  --     --vim.cmd.hi 'Comment gui=none'
-  --   end,
-  -- },
 
   -- Highlight todo, notes, etc in comments
   { 'folke/todo-comments.nvim', event = 'VimEnter', dependencies = { 'nvim-lua/plenary.nvim' }, opts = { signs = false } },
@@ -934,34 +953,40 @@ require('lazy').setup({
       })
     end,
   },
-  --{ 'preservim/nerdtree' },
-  {
-    'nvim-neo-tree/neo-tree.nvim',
-    branch = 'v3.x',
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
-      'MunifTanjim/nui.nvim',
-      -- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
-    },
-    config = function()
-      require('neo-tree').setup {
-        filesystem = {
-          follow_current_file = {
-            enabled = true,
-          },
-        },
-      }
-      local builtin = require 'neo-tree.command'
-      vim.keymap.set('n', '<leader>|', function()
-        builtin.execute { action = 'show', toggle = true }
-      end)
-    end,
-  },
+  { 'preservim/nerdtree' },
+  --{
+  --  'nvim-neo-tree/neo-tree.nvim',
+  --  branch = 'v3.x',
+  --  dependencies = {
+  --    'nvim-lua/plenary.nvim',
+  --    'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
+  --    'MunifTanjim/nui.nvim',
+  --    -- "3rd/image.nvim", -- Optional image support in preview window: See `# Preview Mode` for more information
+  --  },
+  --  config = function()
+  --    require('neo-tree').setup {
+  --      filesystem = {
+  --        follow_current_file = {
+  --          enabled = true,
+  --        },
+  --      },
+  --    }
+  --    local builtin = require 'neo-tree.command'
+  --    vim.keymap.set('n', '<leader>|', function()
+  --      builtin.execute { action = 'show', toggle = true }
+  --    end)
+  --  end,
+  --},
   {
     'windwp/nvim-autopairs',
     event = 'InsertEnter',
     config = true,
+    -- use opts = {} for passing setup options
+    -- this is equalent to setup({}) function
+  },
+  {
+    'windwp/nvim-ts-autotag',
+    opts = {},
     -- use opts = {} for passing setup options
     -- this is equalent to setup({}) function
   },
@@ -976,6 +1001,11 @@ require('lazy').setup({
     },
     config = true,
   },
+  --  {
+  --    'pmizio/typescript-tools.nvim',
+  --    dependencies = { 'nvim-lua/plenary.nvim', 'neovim/nvim-lspconfig' },
+  --    opts = {},
+  --  },
   --  {
   --    'mrcjkb/haskell-tools.nvim',
   --    version = '^3', -- Recommended
